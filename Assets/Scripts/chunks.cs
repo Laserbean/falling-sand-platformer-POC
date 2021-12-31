@@ -62,6 +62,7 @@ public static class Chunks
 
     public static Vector2Int GetChunkPos(Vector2Int pos) 
     {
+        /*Returns the origin of the chunk the thing is in*/
         // Debug.Log(pos.y + "  mod "  + pos.y % Constants.CHUNK_SIZE);
         // return new Vector2Int(pos.x - pos.x % Constants.CHUNK_SIZE,  pos.y - pos.y % Constants.CHUNK_SIZE);
         return new Vector2Int(pos.x -mod(pos.x, Constants.CHUNK_SIZE),  pos.y - mod(pos.y, Constants.CHUNK_SIZE));
@@ -117,4 +118,31 @@ public static class Chunks
     //     pos.x =
     //     return
     // }
+
+    public static (Edge, Edge) EdgeType(Vector2Int cell) {
+        int curindex = GetIndex(cell);
+        Edge edge1= Edge.none, edge2 = Edge.none; 
+
+        if(curindex + Constants.CHUNK_SIZE > Constants.CHUNK_SIZE * Constants.CHUNK_SIZE) {
+            edge1= Edge.up;
+        }else
+        if (curindex < Constants.CHUNK_SIZE) {
+            edge1= Edge.down;
+        } 
+
+        if (mod(curindex, Constants.CHUNK_SIZE)== 0) {
+            edge2= Edge.left; 
+        } else
+        if (mod(curindex-1, Constants.CHUNK_SIZE)== 0) {
+            edge2= Edge.right;
+        }
+        
+        return (edge1, edge2);
+    }
+
+    public enum Edge {
+        up, down, left, right, none
+        // ,
+        // upleft, upright, downleft, downright
+    }
 }
