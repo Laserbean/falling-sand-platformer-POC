@@ -46,8 +46,8 @@ public enum Matter
 public class Constants
 {
     public const int gravity = 1; 
-    public const int CHUNK_SIZE = 4;
+    public const int CHUNK_SIZE = 16;
     public const float PIXEL_SCALE = 0.125f;
-    public const float PERIOD = 3f;
+    public const float PERIOD = 0.1f;
 
 }

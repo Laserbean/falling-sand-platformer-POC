@@ -22,10 +22,10 @@ public class World : MonoBehaviour
     public static Dictionary<Vector2Int, Vector2Int> execution_dict;
 
 
-    // public const int minx = -5, maxx  =5;
-    // public const int miny = -5, maxy  =5;
-    public const int minx = 0, maxx  =1;
-    public const int miny = 0, maxy  =1;
+    public const int minx = -5, maxx  =5;
+    public const int miny = -5, maxy  =5;
+    // public const int minx = 0, maxx  =1;
+    // public const int miny = 0, maxy  =1;
     
     void Start()
     {
@@ -70,19 +70,19 @@ public class World : MonoBehaviour
         element[] fish = new element[(int)Mathf.Pow(Constants.CHUNK_SIZE, 2)];
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // // // cur index in chunk is [ii + ii * Constants.CHUNK_SIZE]
-            // if (Random.Range(0f, 1f) > 0.5f) {
-            //     fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            // } else {
-            //     fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            // }
+            if (Random.Range(0f, 1f) > 0.5f) {
+                fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+            } else {
+                fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+            }
             // if (ii < Constants.CHUNK_SIZE) {
             //     fish[ii] = new Bedrock(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             // } 
-            if(ii == 0 ||ii == 2 || ii == 3 || ii == 0 || ii == 4 || ii == 6 || ii == 7) { //(int)Mathf.Pow(Constants.CHUNK_SIZE, 2) /2
-                fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            }else {
-                fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            }
+            // if(ii == 0 ||ii == 2 || ii == 3 || ii == 0 || ii == 4 || ii == 6 || ii == 7) { //(int)Mathf.Pow(Constants.CHUNK_SIZE, 2) /2
+            //     fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+            // }else {
+            //     fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+            // }
 
         }
 
@@ -130,18 +130,19 @@ public class World : MonoBehaviour
         int curreturn = 0; 
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             curcandidate = World.world_dict[cpos][ii].Step();
-            if (curcandidate.z == 0) {
-                if (World.execution_dict.ContainsKey(World.world_dict[cpos][ii].position)){
-                    World.execution_dict[World.world_dict[cpos][ii].position] = (Vector2Int) curcandidate;
-                    Debug.LogError("Error: The block has not moved and not cleared.");
 
+            //  World.world_dict[cpos][ii].position   //original
+            //  curcandidate  //destination
+            if (curcandidate.z == 0) {
+                if (World.execution_dict.ContainsKey((Vector2Int)curcandidate)){
+                    if (Random.Range(0f, 1f) > 0.5f) {
+                        World.execution_dict[(Vector2Int) curcandidate] = World.world_dict[cpos][ii].position;
+                    }
                     // Debug.Break();
                 } else {
-                    World.execution_dict.Add(World.world_dict[cpos][ii].position, (Vector2Int) curcandidate);
-
+                    World.execution_dict.Add((Vector2Int) curcandidate, World.world_dict[cpos][ii].position);
                 }
                     // Debug.LogError("Hmm" + World.world_dict[cpos][ii].position + " : " + curcandidate);
- 
                 curreturn = 1; 
             }
         }
@@ -149,11 +150,12 @@ public class World : MonoBehaviour
     }
     void ExecuteSwaps() {
         List<Vector2Int> keyList = new List<Vector2Int>(World.execution_dict.Keys);
-        foreach (Vector2Int key in keyList) {
-            Chunks.Swap(key, World.execution_dict[key], solidTilemap);
+        foreach (Vector2Int fish in keyList) {
+            Chunks.Swap(fish, World.execution_dict[fish], solidTilemap);
             // World.chunkstate_dict[key] = 1;
             
             // Chunks.Edge curedge = 
+            Vector2Int key = World.execution_dict[fish];
 
             Chunks.Edge edge1, edge2;
             (edge1, edge2) = Chunks.EdgeType(key);
