@@ -39,7 +39,7 @@ public static class Chunks
 
 
     
-    public static void Swap(Vector2Int pos1, Vector2Int pos2) 
+    public static void Swap(Vector2Int pos1, Vector2Int pos2, Tilemap tilemap) 
     {
         element e1, e2;
         e1 = GetCell(pos1);
@@ -48,6 +48,10 @@ public static class Chunks
         e2.position = pos1; 
         SetCell(e1); 
         SetCell(e2);
+        SetTileColour(e1.color, (Vector3Int)e1.position, tilemap);
+        SetTileColour(e2.color, (Vector3Int)e2.position, tilemap);
+
+
     }
 
     public static int mod(int x, int m) {
