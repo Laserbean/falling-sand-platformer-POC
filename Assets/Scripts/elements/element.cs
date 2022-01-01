@@ -17,9 +17,11 @@ public class element
     public Vector2Int position {get; set;}
     public Color32 color{get; set;}
     public Matter matter{get; set;}
+    public bool IsFreeFalling{get; set;}
 
     public element(Vector2Int pos, Vector2? speed = null)
     {
+        this.IsFreeFalling = true;
         this.position = pos; 
         if (speed == null) {
             this.speed = Vector2.zero;
@@ -57,7 +59,7 @@ public enum Matter
 
 public class Constants
 {
-    public const float GRAVITY = 1f;  //pixels per frame
+    public const float GRAVITY = 0.5f;  //pixels per frame
     public const int CHUNK_SIZE = 16;
     public const float PIXEL_SCALE = 0.125f;
     public const float PERIOD = 0.1f;
