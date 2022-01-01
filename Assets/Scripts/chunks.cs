@@ -154,11 +154,11 @@ public static class Chunks
 
     public static List<Vector2Int> GetLinearList(Vector2Int pos1, Vector2Int pos2) {
         List<Vector2Int> returnlist = new List<Vector2Int>();
-        float gradient;
+        // float gradient;
         int numberOfPoints;
         Vector2Int curpoint = Vector2Int.zero;
 
-        gradient = (pos2.y - pos1.y)/(pos2.x - pos1.x); 
+        // gradient = (pos2.y - pos1.y)/(pos2.x - pos1.x); 
         if (Mathf.Abs(pos2.y-pos1.y) < Mathf.Abs(pos2.x - pos1.x)) {
             numberOfPoints = Mathf.Abs(pos2.x - pos1.x);
         }

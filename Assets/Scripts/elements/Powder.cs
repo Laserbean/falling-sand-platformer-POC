@@ -11,7 +11,7 @@ public class Powder: element
         this.matter = Matter.Solid;
     }
 
-    public override Vector3Int Step()
+    public override Vector3Int StepSimple()
     {
         // // // Vector3 newpos = this._position + this.speed;
         //for now, just go down. 
@@ -28,16 +28,23 @@ public class Powder: element
 
         if (botleft && botright) {
             if (Random.Range(0f, 1f) > 0.5f) { 
+                this.speed = new Vector2(-Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
                 return (Vector3Int)(this.position + new Vector2Int(-1, -1));
             } else {
+                this.speed = new Vector2(Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+
                 return (Vector3Int)(this.position + new Vector2Int(1, -1));
             }
         }
         else {
             if (botright) {
+                this.speed = new Vector2(Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+
                 return (Vector3Int)(this.position + new Vector2Int(1, -1));
             }
             if(botleft) {
+                this.speed = new Vector2(-Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+
                 return (Vector3Int)(this.position + new Vector2Int(-1, -1));
             }
             
@@ -50,24 +57,46 @@ public class Powder: element
 
     }
 
-    // public override Vector3Int Step()
-    // {
-    //     Vector2 cur = (Vector2)this.position;
-    //     Vector2Int end = this.position + this.speedInt; 
-
-    //     // bool done = false;
-
-    //     // while(!done) {
-
-    //     // }
+    public override Vector3Int Step()
+    {
+        Vector2Int cur = this.position;
+        Vector2Int end = this.position + this.speedInt; 
+        Vector2Int candidate = cur;
 
 
+        this.speed = new Vector2(this.speed.x, this.speed.y - Constants.GRAVITY);
+        
+        List<Vector2Int> vlist = Chunks.GetLinearList(cur, end);    
 
-    //     return Vector3Int.one;
+        foreach(Vector2Int pos in vlist) {
+            if (pos == cur) {
+                continue;
+            }
+            if (Chunks.GetCell(pos).matter == Matter.None) {
+                candidate = pos; 
+            } else {
+                if (this.speed.x == 0) {
+                    return this.StepSimple();
 
-    //     //if under is nothing, add gravity
+                } else {
+                    this.speed = new Vector2(0f, this.speed.y);
+                }
+                this.speed = new Vector2(0f, this.speed.y);
 
-    // }
+                if (candidate == cur) {
+                    return Vector3Int.one;
+                }
+                break;
+            }
+        }
+ 
+
+        
+        return (Vector3Int) candidate;
+
+        //if under is nothing, add gravity
+
+    }
 
 }
 
