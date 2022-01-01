@@ -22,10 +22,10 @@ public class World : MonoBehaviour
     public static Dictionary<Vector2Int, Vector2Int> execution_dict;
 
 
-    public const int minx = -5, maxx  =5;
-    public const int miny = -5, maxy  =5;
-    // public const int minx = 0, maxx  =1;
-    // public const int miny = 0, maxy  =1;
+    // public const int minx = -5, maxx  =5;
+    // public const int miny = -5, maxy  =5;
+    public const int minx = 0, maxx  =1;
+    public const int miny = 0, maxy  =1;
     
     void Start()
     {
@@ -68,9 +68,12 @@ public class World : MonoBehaviour
     void chunkgen(Vector2Int chunkpos)
     {
         element[] fish = new element[(int)Mathf.Pow(Constants.CHUNK_SIZE, 2)];
+
+        List<Vector2Int> vlist = Chunks.GetLinearList(chunkpos+ new Vector2Int(8,8), chunkpos + new Vector2Int(14,15));
+
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // // // cur index in chunk is [ii + ii * Constants.CHUNK_SIZE]
-            if (Random.Range(0f, 1f) > 0.5f) {
+            if (Random.Range(0f, 1f) > 1f) {
                 fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             } else {
                 fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
@@ -83,8 +86,15 @@ public class World : MonoBehaviour
             // }else {
             //     fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             // }
+            Vector2Int curpoint = chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE);
+
+            if (vlist.Contains(curpoint)){
+                fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+
+            }
 
         }
+
 
         // if (Mathf.Round(Random.Range(0, 1)) > 0.5) {
         //         fish[ii] = basictile

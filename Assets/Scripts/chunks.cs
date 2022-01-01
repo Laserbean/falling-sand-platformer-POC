@@ -145,4 +145,67 @@ public static class Chunks
         // ,
         // upleft, upright, downleft, downright
     }
+    public static float map(float OldValue, float OldMin, float OldMax, float NewMin, float NewMax){
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+        return(NewValue);
+    }
+
+    public static List<Vector2Int> GetLinearList(Vector2Int pos1, Vector2Int pos2) {
+        List<Vector2Int> returnlist = new List<Vector2Int>();
+        float gradient;
+        int numberOfPoints;
+        Vector2Int curpoint = Vector2Int.zero;
+
+        gradient = (pos2.y - pos1.y)/(pos2.x - pos1.x); 
+        if (Mathf.Abs(pos2.y-pos1.y) < Mathf.Abs(pos2.x - pos1.x)) {
+            numberOfPoints = Mathf.Abs(pos2.x - pos1.x);
+        }
+        else { 
+            numberOfPoints = Mathf.Abs(pos2.y - pos1.y);
+        }
+        for(int i = 0; i < numberOfPoints; i++){
+            // map the counter to a normalized (0.0 to 1.0) value for lerp
+            // 0.0 = 0 % along the line, 0.5 = 50% along the line, 1.0 = 100% along the line
+            float t = map(i, 0, numberOfPoints, 0.0f, 1.0f);
+            // linearly interpolate between the start / end points (and snap to whole pixels (casting to integer type))
+            curpoint.x = (int)Mathf.Lerp(pos1.x, pos2.x, t);
+            curpoint.y = (int)Mathf.Lerp(pos1.y, pos2.y, t);
+
+            returnlist.Add(curpoint);            
+        }
+        returnlist.Add(pos2);            
+
+        // if (pos2.x != pos1.x) {
+            
+                
+        // } else {
+        //     for(int i = pos1.y; i <pos2.y; i++) {
+        //         returnlist.Add(new Vector2Int(pos1.x, i));
+        //     }
+        // }
+
+
+
+
+        return returnlist; 
+
+        // if (gradient < 0.5) {
+        //     returnarr = new Vector2Int[(int)(pos2.x - pos1.x)];
+        //     for (int i = pos1.x; i < pos2.x; i++) {
+        //         int y = (int)(i * gradient + pos1.y);
+        //         // Debug.Log("y" + y);
+        //         returnarr[i- pos1.x] = new Vector2Int(i, y); 
+        //     }
+        // }
+        // else { 
+        //     gradient = (pos2.x - pos1.x)/(pos2.y - pos1.y); 
+        //     returnarr = new Vector2Int[(int)(pos2.y - pos1.y)];
+        //     for (int i = pos1.y; i < pos2.y; i++) {
+        //         returnarr[i-pos1.y] = new Vector2Int((int)(i * gradient + pos1.x), i); 
+        //     }
+        // }
+        // return new List<Vector2Int>(returnarr);
+    }
 }

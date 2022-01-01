@@ -14,7 +14,6 @@ public class Powder: element
     public override Vector3Int Step()
     {
         // // // Vector3 newpos = this._position + this.speed;
-
         //for now, just go down. 
         Vector2Int candidate = (this.position - new Vector2Int(0, 1));
         // Debug.Log(Chunks.GetCell(candidate).matter);
@@ -50,6 +49,25 @@ public class Powder: element
         //if under is nothing, add gravity
 
     }
+
+    // public override Vector3Int Step()
+    // {
+    //     Vector2 cur = (Vector2)this.position;
+    //     Vector2Int end = this.position + this.speedInt; 
+
+    //     // bool done = false;
+
+    //     // while(!done) {
+
+    //     // }
+
+
+
+    //     return Vector3Int.one;
+
+    //     //if under is nothing, add gravity
+
+    // }
 
 }
 

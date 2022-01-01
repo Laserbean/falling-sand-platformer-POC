@@ -9,6 +9,11 @@ public class element
     This will be the base class. 
     */
     public Vector2 speed {get; set;}
+    public Vector2Int speedInt {
+        get {
+            return new Vector2Int((int) this.speed.x,(int) this.speed.y);
+        }
+    }
     public Vector2Int position {get; set;}
     public Color32 color{get; set;}
     public Matter matter{get; set;}
@@ -30,6 +35,13 @@ public class element
         return Vector3Int.one;
         //Do nothing here. 
     }
+    public virtual Vector3Int StepSimple()
+    {
+        return Vector3Int.one;
+        //Do nothing here. 
+    }
+
+
 
 }
 
@@ -45,9 +57,10 @@ public enum Matter
 
 public class Constants
 {
-    public const int gravity = 1; 
+    public const float GRAVITY = 1f;  //pixels per frame
     public const int CHUNK_SIZE = 16;
     public const float PIXEL_SCALE = 0.125f;
-    public const float PERIOD = 0.1f;
+    // public const float PERIOD = 0.1f;
+    public const float PERIOD = 5f;
 
 }
