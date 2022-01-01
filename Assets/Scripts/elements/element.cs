@@ -15,9 +15,12 @@ public class element
         }
     }
     public Vector2Int position {get; set;}
+    
     public Color32 color{get; set;}
     public Matter matter{get; set;}
     public bool IsFreeFalling{get; set;}
+
+    public float friction;
 
     public element(Vector2Int pos, Vector2? speed = null)
     {
@@ -30,6 +33,7 @@ public class element
         }
         this.matter = Matter.None;
         this.color = new Color32(100,100,100,100);
+        this.friction = 0.5f;
     }
 
     public virtual Vector3Int Step()

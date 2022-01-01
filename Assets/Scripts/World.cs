@@ -76,7 +76,7 @@ public class World : MonoBehaviour
         }
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // // // cur index in chunk is [ii + ii * Constants.CHUNK_SIZE]
-            if (Random.Range(0f, 1f) > val) {
+            if (Random.Range(0f, 1f) > val && Chunks.mod(ii,Constants.CHUNK_SIZE) == 0) {
                 fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             } else {
                 fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
@@ -177,6 +177,8 @@ public class World : MonoBehaviour
 
             Chunks.Edge edge1, edge2;
             (edge1, edge2) = Chunks.EdgeType(key);
+            World.chunkstate_dict[Chunks.GetChunkPos(fish)] = 1;
+
 
             if (edge1 == Chunks.Edge.up) {
                 if (World.chunkstate_dict.ContainsKey(Chunks.GetChunkPos(key)+ new Vector2Int(0,Constants.CHUNK_SIZE))) { //up

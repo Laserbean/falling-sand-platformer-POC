@@ -6,10 +6,12 @@ using UnityEngine;
 public class Powder: element 
 {
     public float InertialResistance = 0.5f;  
+    public float airResistance = 0.3f;
     public Powder(Vector2Int pos, Vector2? speed = null) : base (pos, speed)
     {
         this.color = new Color32(100, 100, 100, 255);
         this.matter = Matter.Solid;
+        this.friction = 0.9f;
     }
 
     public override Vector3Int Step()
@@ -18,7 +20,8 @@ public class Powder: element
         // // // Vector2Int candidate = (this.position - new Vector2Int(0, 1));
 
         Vector2Int cur = this.position;
-        Vector2Int end = this.position + this.speedInt; 
+        // Vector2Int end = this.position + this.speedInt; 
+        Vector2Int end = new Vector2Int(this.position.x + this.speedInt.x, this.position.y + (Mathf.Abs(this.speedInt.y) >=1 ? this.speedInt.y: -1));
         Vector2Int candidate = cur;
 
 
@@ -36,10 +39,18 @@ public class Powder: element
                 if (candidate == cur) {  //if the next spot is not go-able
                     break;
                 } else {
+                    this.speed = new Vector2(0, this.speed.y);
                     return  (Vector3Int) candidate; 
                 }
             }
         }  
+        if (candidate == end) {
+            this.color = new Color32(100, 100, 100, 255);
+
+            return  (Vector3Int) candidate; 
+        }
+        
+        candidate = (this.position - new Vector2Int(0, 1));
 
         if (Chunks.GetCell(candidate).matter == Matter.None) {
             // Debug.Log("Swap"+ candidate+ "curpors" + this.position);
@@ -52,24 +63,42 @@ public class Powder: element
 
         if (botleft && botright) {
             if (Random.Range(0f, 1f) > 0.5f) { 
-                this.speed = new Vector2(-Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+                this.speed = new Vector2(-Constants.GRAVITY*0.3f, this.speed.y);
+            this.color = new Color32(255, 50, 50, 255);
+
                 return (Vector3Int)(this.position + new Vector2Int(-1, -1));
             } else {
-                this.speed = new Vector2(Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+                this.color = new Color32(50, 50, 255, 255);
+
+                this.speed = new Vector2(Constants.GRAVITY*0.3f, this.speed.y);
                 return (Vector3Int)(this.position + new Vector2Int(1, -1));
             }
         }
         else {
             if (botright) {
-                this.speed = new Vector2(Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+                // this.speed = new Vector2(Constants.GRAVITY*0.3f, this.speed.y  -Constants.GRAVITY*0.5f);
+                this.color = new Color32(50, 50, 255, 255);
+
+                this.speed = new Vector2(Constants.GRAVITY*0.3f, this.speed.y);
                 return (Vector3Int)(this.position + new Vector2Int(1, -1));
             }
             if(botleft) {
-                this.speed = new Vector2(-Constants.GRAVITY*0.5f, this.speed.y  -Constants.GRAVITY*0.5f);
+                // this.speed = new Vector2(-Constants.GRAVITY*0.3f, this.speed.y  -Constants.GRAVITY*0.5f);
+                this.color = new Color32(255, 50, 50, 255);
+
+                this.speed = new Vector2(-Constants.GRAVITY*0.3f, this.speed.y);
                 return (Vector3Int)(this.position + new Vector2Int(-1, -1));
             }
         }
-        this.speed = Vector2.zero; 
+
+        if(this.speed.y != 0f && Chunks.GetCell(this.position - new Vector2Int(0, 1)).speed.y == 0f) {
+            float absY = Mathf.Max(this.speed.y * airResistance, 10);
+            this.speed = new Vector2(this.speed.x< 0 ? -absY : absY, 0f);
+            this.color = new Color32(40, 255, 50, 255);
+
+        }
+        this.speed =new Vector2 ( Chunks.GetCell(this.position - new Vector2Int(0, 1)).friction * this.friction * this.speed.x, 0f);
+
         this.IsFreeFalling = false; 
         return Vector3Int.one;
 
