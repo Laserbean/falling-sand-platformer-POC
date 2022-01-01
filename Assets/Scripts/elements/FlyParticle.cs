@@ -16,6 +16,9 @@ public class FlyParticle: element
     {
         Vector2Int cur = this.position;
         Vector2Int end = this.position + this.speedInt; 
+
+        // Vector2Int end = new Vector2Int(this.position.x + this.speedInt.x, this.position.y + (Mathf.Abs(this.speedInt.y) >=1 ? this.speedInt.y: -1));
+
         Vector2Int candidate = cur;
 
 

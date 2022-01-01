@@ -26,6 +26,8 @@ public class World : MonoBehaviour
     public const int miny = -5, maxy  =20;
     // public const int minx = 0, maxx  =1;
     // public const int miny = 0, maxy  =1;
+    // public const int minx = -1, maxx  =1;
+    // public const int miny = -1, maxy  =1;
     
     void Start()
     {
@@ -71,12 +73,12 @@ public class World : MonoBehaviour
 
         // List<Vector2Int> vlist = Chunks.GetLinearList(chunkpos+ new Vector2Int(8,8), chunkpos + new Vector2Int(14,15));
         float val = 0.5f; 
-        if (chunkpos.y < 0 || chunkpos.x != 0) {
+        if (chunkpos.y < 0|| chunkpos.x != 0) { //  ){ // 
             val = 1f; 
         }
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // // // cur index in chunk is [ii + ii * Constants.CHUNK_SIZE]
-            if (Random.Range(0f, 1f) > val && Chunks.mod(ii,Constants.CHUNK_SIZE) == 0) {
+            if (Random.Range(0f, 1f) > val ){//&& Chunks.mod(ii,Constants.CHUNK_SIZE) == 0) {
                 fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             } else {
                 fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
@@ -113,7 +115,7 @@ public class World : MonoBehaviour
 
     }
 
-    void MyUpdate() {
+    void Update() {
         // // // // Chunks.drawChunk(Vector2Int.zero, solidTilemap);
         // Vector2Int curpos;
         // for (int i = minx; i < maxx; i++) {
@@ -135,7 +137,9 @@ public class World : MonoBehaviour
                         result = 2; 
                     }
                 }
-                World.chunkstate_dict[key] = result;
+                if (result != -1) {
+                    World.chunkstate_dict[key] = result;
+                }
             }
         }
         ExecuteSwaps();
@@ -146,6 +150,9 @@ public class World : MonoBehaviour
     int UpdateChunk(Vector2Int cpos) {
         Vector3Int curcandidate;
         int curreturn = 0; 
+        if (!World.world_dict.ContainsKey(cpos)) {
+            return -1;
+        }
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             curcandidate = World.world_dict[cpos][ii].Step();
 
