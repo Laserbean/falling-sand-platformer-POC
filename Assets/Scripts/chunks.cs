@@ -133,7 +133,7 @@ public static class Chunks
         if (mod(curindex, Constants.CHUNK_SIZE)== 0) {
             edge2= Edge.left; 
         } else
-        if (mod(curindex-1, Constants.CHUNK_SIZE)== 0) {
+        if (mod(curindex, Constants.CHUNK_SIZE)+1-Constants.CHUNK_SIZE== 0) {
             edge2= Edge.right;
         }
         

@@ -23,7 +23,7 @@ public class World : MonoBehaviour
 
 
     public const int minx = -5, maxx  =5;
-    public const int miny = -5, maxy  =10;
+    public const int miny = -5, maxy  =20;
     // public const int minx = 0, maxx  =1;
     // public const int miny = 0, maxy  =1;
     
@@ -71,7 +71,7 @@ public class World : MonoBehaviour
 
         // List<Vector2Int> vlist = Chunks.GetLinearList(chunkpos+ new Vector2Int(8,8), chunkpos + new Vector2Int(14,15));
         float val = 0.5f; 
-        if (chunkpos.y < 0) {
+        if (chunkpos.y < 0 || chunkpos.x != 0) {
             val = 1f; 
         }
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
