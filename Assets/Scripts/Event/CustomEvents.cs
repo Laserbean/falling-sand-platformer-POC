@@ -19,6 +19,10 @@ public class MyVector3Event : UnityEvent<Vector3>
 public class MyStringEvent : UnityEvent<string>
 {
 }
+[System.Serializable]
+public class MyVector2IntEvent : UnityEvent<Vector2Int>
+{
+}
 
 
 

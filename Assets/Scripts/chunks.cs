@@ -50,9 +50,17 @@ public static class Chunks
         SetCell(e2);
         SetTileColour(e1.color, (Vector3Int)e1.position, tilemap);
         SetTileColour(e2.color, (Vector3Int)e2.position, tilemap);
-
-
     }
+
+    public static void AddCell(element cell, Tilemap tilemap) 
+    {
+        if (GetCell(cell.position).matter == Matter.None) {
+            SetCell(cell); 
+        }
+    }
+
+
+
 
     public static int mod(int x, int m) {
         // return (x%m + m)%m;
@@ -92,6 +100,13 @@ public static class Chunks
             World.world_dict[GetChunkPos(pos)][GetIndex(pos)] = cell;
         } else {
             Debug.LogError("ehhhh")  ;
+        }
+    }
+    public static void TryWakeCell(Vector2Int pos) {
+        if (World.world_dict.ContainsKey(GetChunkPos(pos))) {
+            World.world_dict[GetChunkPos(pos)][GetIndex(pos)].TryWakeCell();
+        } else {
+            Debug.LogError("ehhhh Can't wake cell cause world dones't whatever")  ;
         }
     }
     public static int GetIndex(Vector2Int pos) {

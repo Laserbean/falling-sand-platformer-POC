@@ -18,13 +18,14 @@ public class element
     
     public Color32 color{get; set;}
     public Matter matter{get; set;}
-    public bool IsFreeFalling{get; set;}
+    public int IsFreeFalling{get; set;}
+    public float inertialResistance; 
 
     public float friction;
 
     public element(Vector2Int pos, Vector2? speed = null)
     {
-        this.IsFreeFalling = true;
+        this.IsFreeFalling = 2;
         this.position = pos; 
         if (speed == null) {
             this.speed = Vector2.zero;
@@ -34,6 +35,7 @@ public class element
         this.matter = Matter.None;
         this.color = new Color32(100,100,100,100);
         this.friction = 0.5f;
+        this.inertialResistance = 0f; 
     }
 
     public virtual Vector3Int Step()
@@ -45,6 +47,13 @@ public class element
     {
         return Vector3Int.one;
         //Do nothing here. 
+    }
+
+    public virtual void TryWakeCell() {
+        if (this.IsFreeFalling >0) { return;}
+
+        this.IsFreeFalling = Random.Range(0f, 1f) >= inertialResistance ? 2: 0;
+        // this.IsFreeFalling = true;
     }
 
 

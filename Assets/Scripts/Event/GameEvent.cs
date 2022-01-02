@@ -32,6 +32,12 @@ public class GameEvent : ScriptableObject
 			listeners[i].OnEventRaised(vec);
 	}
 
+	public void Raise2Vector2Int(Vector2Int vec)
+	{
+		for(int i = listeners.Count -1; i >= 0; i--)
+			listeners[i].OnEventRaised(vec);
+	}
+
 	public void Raise2String(string str1)
 	{
 		for(int i = listeners.Count -1; i >= 0; i--)

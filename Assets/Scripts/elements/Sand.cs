@@ -10,6 +10,8 @@ public class Sand: Powder
         byte off = (byte) Mathf.Round(Random.Range(50, 150));
         this.color = new Color32(255, 244, off, 255);
         this.friction = 0.1f; 
+        this.inertialResistance = 0.5f;  
+
     }
 
 

@@ -10,6 +10,8 @@ public class GameEventListener : MonoBehaviour
     public MyIntEvent Response2Int;
     public MyBoolEvent Response2Bool;
     public MyVector3Event Response2Vector3;
+    public MyVector2IntEvent Response2Vector2Int;
+
     public MyStringEvent Respose2String;
 
 
@@ -38,10 +40,14 @@ public class GameEventListener : MonoBehaviour
         Response2Bool.Invoke(fish);
     }
 
-
     public void OnEventRaised(Vector3 fish)
     { 
         Response2Vector3.Invoke(fish);
+    }
+
+    public void OnEventRaised(Vector2Int fish)
+    { 
+        Response2Vector2Int.Invoke(fish);
     }
 
     public void OnEventRaised(string fish)

@@ -24,6 +24,7 @@ public class World : MonoBehaviour
 
     public const int minx = -5, maxx  =5;
     public const int miny = -5, maxy  =20;
+    
     // public const int minx = 0, maxx  =1;
     // public const int miny = 0, maxy  =1;
     // public const int minx = -1, maxx  =1;
@@ -31,6 +32,7 @@ public class World : MonoBehaviour
     
     void Start()
     {
+        // solidTilemap = GameObject.Find("solid").GetComponent<Tilemap>();
         World.world_dict = new Dictionary<Vector2Int, element[]>(); 
         World.chunkstate_dict = new Dictionary<Vector2Int, int>(); 
         World.execution_dict = new Dictionary<Vector2Int, Vector2Int>(); 
@@ -62,7 +64,7 @@ public class World : MonoBehaviour
         World.print("done");
         // float period = 1f/60f; //time update
 
-        InvokeRepeating("MyUpdate", Constants.PERIOD, Constants.PERIOD);
+        // InvokeRepeating("MyUpdate", Constants.PERIOD, Constants.PERIOD);
  
     }
 
@@ -111,7 +113,7 @@ public class World : MonoBehaviour
         //     }
  
         World.world_dict.Add(chunkpos, fish);
-        Debug.LogError(chunkpos);
+        // // // // // // Debug.LogError(chunkpos);
 
     }
 
@@ -175,16 +177,34 @@ public class World : MonoBehaviour
     }
     void ExecuteSwaps() {
         List<Vector2Int> keyList = new List<Vector2Int>(World.execution_dict.Keys);
-        foreach (Vector2Int fish in keyList) {
+        foreach (Vector2Int fish in keyList) { //fish is destination, value is origin.
             Chunks.Swap(fish, World.execution_dict[fish], solidTilemap);
             // World.chunkstate_dict[key] = 1;
             
             // Chunks.Edge curedge = 
-            Vector2Int key = World.execution_dict[fish];
+            Vector2Int key = World.execution_dict[fish]; //should be called value
 
             Chunks.Edge edge1, edge2;
             (edge1, edge2) = Chunks.EdgeType(key);
             World.chunkstate_dict[Chunks.GetChunkPos(fish)] = 1;
+            if (Chunks.GetCell(fish+ Vector2Int.left).IsFreeFalling <1) {
+                Chunks.TryWakeCell(fish + Vector2Int.left);
+            }
+            if (Chunks.GetCell(fish+ Vector2Int.right).IsFreeFalling <1) {
+                Chunks.TryWakeCell(fish + Vector2Int.right);
+            }
+            if (Chunks.GetCell(fish+ Vector2Int.down).IsFreeFalling <1) {
+                Chunks.TryWakeCell(fish + Vector2Int.down);
+            }
+
+            if (Chunks.GetCell(fish+ Vector2Int.left +Vector2Int.up).IsFreeFalling <1) {
+                Chunks.TryWakeCell(fish + Vector2Int.left +Vector2Int.up);
+            }
+            if (Chunks.GetCell(fish+ Vector2Int.right +Vector2Int.up).IsFreeFalling <1) {
+                Chunks.TryWakeCell(fish + Vector2Int.right +Vector2Int.up);
+            }
+
+
 
 
             if (edge1 == Chunks.Edge.up) {
@@ -224,14 +244,15 @@ public class World : MonoBehaviour
         Debug.DrawLine(new Vector3(pos2.x, pos.y, 0),new Vector3(pos2.x, pos2.y, 0), color, Constants.PERIOD); 
         Debug.DrawLine(new Vector3(pos2.x, pos2.y, 0),new Vector3(pos.x, pos2.y, 0), color, Constants.PERIOD); 
         Debug.DrawLine(new Vector3(pos.x, pos2.y, 0),new Vector3(pos.x, pos.y, 0), color, Constants.PERIOD); 
-
-
-
-
-
         // Gizmos.color = new Color(1, 0, 0, 0.5f);
         // Gizmos.DrawCube((Vector3)(Vector3Int) pos, new Vector3(Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1));
     }
 
+    public void AddCell(Vector2Int pos) {
+        pos = new Vector2Int((int)((float)pos.x / Constants.PIXEL_SCALE), (int)((float)pos.y / Constants.PIXEL_SCALE));
+        // Debug.Log(pos);
+        World.chunkstate_dict[Chunks.GetChunkPos(pos)] = 1;
+        Chunks.AddCell(new Sand(pos), solidTilemap); 
+    }
 
 }
