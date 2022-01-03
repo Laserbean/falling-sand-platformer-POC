@@ -100,9 +100,10 @@ public class Powder: element
             return Vector3Int.one;
         }
         
-        // // // // if (Chunks.GetCell(this.position-new Vector2Int(0, 1)).friction * this.friction * 0.5 > 0.5f) {
-        // // // //     this.IsFreeFalling = false;
-        // // // // }
+        if (Random.Range(0f, 1f) <= this.inertialResistance) {
+            this.IsFreeFalling = 0;
+            return Vector3Int.one;
+        }
 
 
         if (botleft && botright) {

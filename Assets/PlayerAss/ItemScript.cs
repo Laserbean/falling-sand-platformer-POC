@@ -51,9 +51,10 @@ public class ItemScript : MonoBehaviour
             Vector2 sposVect = cam.ScreenToWorldPoint(Input.mousePosition);
             
             // // add cell here
-
+            Vector3 posvec = sposVect;
+            posvec.z = 5; 
             // World.AddCell(new Vector2Int((int)sposVect.x, (int)sposVect.y));
-            spwn.Raise2Vector2Int(new Vector2Int((int)sposVect.x, (int)sposVect.y));
+            spwn.Raise2Vector3(posvec);
 
             // thisprojectile = (Instantiate(particle, transform.position, Quaternion.LookRotation(new Vector3(0, 0, 1), Input.mousePosition - screenPos)));
             // thisprojectile.GetComponent<ProjectileScript>().projectileHit += handleProjectileHit;

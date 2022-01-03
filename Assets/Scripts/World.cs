@@ -248,11 +248,22 @@ public class World : MonoBehaviour
         // Gizmos.DrawCube((Vector3)(Vector3Int) pos, new Vector3(Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1));
     }
 
-    public void AddCell(Vector2Int pos) {
-        pos = new Vector2Int((int)((float)pos.x / Constants.PIXEL_SCALE), (int)((float)pos.y / Constants.PIXEL_SCALE));
-        // Debug.Log(pos);
+    public void AddCell(Vector3 pos1) {
+        float radius = pos1.z; 
+        Vector2Int pos = new Vector2Int((int)(pos1.x *8) ,(int) (pos1.y *8));
+        Debug.Log(pos);
         World.chunkstate_dict[Chunks.GetChunkPos(pos)] = 1;
         Chunks.AddCell(new Sand(pos), solidTilemap); 
+    }
+    bool isInCircle(Vector2Int pos, Vector2Int center, int radius) { 
+        if (pos.x > center.x + radius || pos.x < center.x - radius || 
+        pos.y > center.y + radius || pos.y < center.y - radius) {
+            return false; 
+        } else {
+        float y = Mathf.Sqrt(radius*radius - Mathf.Pow(pos.x-center.x,2))+center.y; 
+
+            return true; 
+        }
     }
 
 }
