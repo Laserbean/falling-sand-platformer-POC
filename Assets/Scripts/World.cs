@@ -248,22 +248,40 @@ public class World : MonoBehaviour
         // Gizmos.DrawCube((Vector3)(Vector3Int) pos, new Vector3(Constants.CHUNK_SIZE, Constants.CHUNK_SIZE, 1));
     }
 
-    public void AddCell(Vector3 pos1) {
-        float radius = pos1.z; 
+    public void MouseEvent(Vector3 pos1) {
+        int radius = (int) pos1.z; 
         Vector2Int pos = new Vector2Int((int)(pos1.x *8) ,(int) (pos1.y *8));
+        Vector2Int curpos = Vector2Int.zero; 
+        for (int j = (int) pos.y - radius; j < pos.y + radius; j++) {
+            for (int i = (int) pos.x - radius; i < pos.x + radius; i++) {
+                curpos.x = i;
+                curpos.y = j; 
+                if (isInCircle(curpos, new  Vector2Int((int) pos.x, (int) pos.y), radius)) {
+                    AddCell(curpos);
+                }
+            }
+        }
+
+    }
+
+    public void AddCell(Vector2Int pos) {
         Debug.Log(pos);
         World.chunkstate_dict[Chunks.GetChunkPos(pos)] = 1;
         Chunks.AddCell(new Sand(pos), solidTilemap); 
     }
-    bool isInCircle(Vector2Int pos, Vector2Int center, int radius) { 
-        if (pos.x > center.x + radius || pos.x < center.x - radius || 
-        pos.y > center.y + radius || pos.y < center.y - radius) {
-            return false; 
-        } else {
-        float y = Mathf.Sqrt(radius*radius - Mathf.Pow(pos.x-center.x,2))+center.y; 
 
-            return true; 
-        }
+
+    bool isInCircle(Vector2Int pos, Vector2Int center, int radius) { 
+        return ((pos - center).magnitude <= radius);
+        // if (pos.x > center.x + radius || pos.x < center.x - radius || 
+        // pos.y > center.y + radius || pos.y < center.y - radius) {
+        //     return false; 
+        // } else {
+        //     pos.x = pos.x > center.x? pos.x : 2*center.x - pos.x;
+        //     pos.y = pos.y > center.y? pos.y : 2*center.y - pos.y;
+        //     float y = Mathf.Sqrt(radius*radius - Mathf.Pow(pos.x-center.x,2))+center.y; 
+        //     return (pos.y <= y);
+        // }
     }
 
 }

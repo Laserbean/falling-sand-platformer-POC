@@ -305,13 +305,10 @@ MonoBehaviour:
       m_Calls: []
   Response2Vector3:
     m_PersistentCalls:
-      m_Calls: []
-  Response2Vector2Int:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 346406137}
         m_TargetAssemblyTypeName: World, Assembly-CSharp
-        m_MethodName: AddCell
+        m_MethodName: MouseEvent
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -321,6 +318,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  Response2Vector2Int:
+    m_PersistentCalls:
+      m_Calls: []
   Respose2String:
     m_PersistentCalls:
       m_Calls: []
