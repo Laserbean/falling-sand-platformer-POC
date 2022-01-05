@@ -10,7 +10,9 @@ public class World : MonoBehaviour
     // Global constants
     // // // const int CHUNK_AREA = CHUNK_SIZE* CHUNK_SIZE;
 
-    public Tilemap solidTilemap;
+    public Tilemap colorTileMap;
+    public Tilemap solidTileMap;
+
     public Tile basictile;
     // TileBase[] tileArray = new TileBase[Constants.CHUNK_SIZE* Constants.CHUNK_SIZE];
 
@@ -32,7 +34,8 @@ public class World : MonoBehaviour
     
     void Start()
     {
-        // solidTilemap = GameObject.Find("solid").GetComponent<Tilemap>();
+        TileManager.init(basictile, solidTileMap);
+        // colorTileMap = GameObject.Find("solid").GetComponent<Tilemap>();
         World.world_dict = new Dictionary<Vector2Int, element[]>(); 
         World.chunkstate_dict = new Dictionary<Vector2Int, int>(); 
         World.execution_dict = new Dictionary<Vector2Int, Vector2Int>(); 
@@ -43,16 +46,19 @@ public class World : MonoBehaviour
             for (int j = miny; j < maxy; j++) {
                 curpos = new Vector2Int(i * Constants.CHUNK_SIZE, j* Constants.CHUNK_SIZE);
                 chunkgen(curpos);
-                Chunks.fillChunk(curpos, solidTilemap, basictile); //fills with basic tile
-                Chunks.drawChunk(curpos, solidTilemap);
+
+                Chunks.fillChunk(curpos, colorTileMap, basictile); //fills with basic tile
+                Chunks.drawChunk(curpos, colorTileMap);
+
                 World.chunkstate_dict.Add(curpos, 1); 
+                // Chunks.fillSolidChunk(curpos, solidTileMap, basictile);
             }
         }
-        // Chunks.drawChunk(Vector2Int.zero, solidTilemap);
+        // Chunks.drawChunk(Vector2Int.zero, colorTileMap);
         // for(int jj =0;jj < Constants.CHUNK_SIZE; jj++) {
         //     for(int ii =0;ii < Constants.CHUNK_SIZE; ii++) {
         //         Debug.Log("Hmmmm");
-        //         solidTilemap.SetTile( new Vector3Int(ii, jj, 0),basictile);
+        //         colorTileMap.SetTile( new Vector3Int(ii, jj, 0),basictile);
         //     }
         // }
         // Vector3Int[] positions = new Vector3Int[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
@@ -60,7 +66,7 @@ public class World : MonoBehaviour
         // for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
         //     positions[ii] = new Vector3Int(ii % Constants.CHUNK_SIZE, ii / Constants.CHUNK_SIZE, 0);
         // }
-        // solidTilemap.SetTiles(positions, fish);
+        // colorTileMap.SetTiles(positions, fish);
         World.print("done");
         // float period = 1f/60f; //time update
 
@@ -118,12 +124,12 @@ public class World : MonoBehaviour
     }
 
     void Update() {
-        // // // // Chunks.drawChunk(Vector2Int.zero, solidTilemap);
+        // // // // Chunks.drawChunk(Vector2Int.zero, colorTileMap);
         // Vector2Int curpos;
         // for (int i = minx; i < maxx; i++) {
         //     for (int j = miny; j < maxy; j++) {
         //         curpos = new Vector2Int(i * Constants.CHUNK_SIZE, j* Constants.CHUNK_SIZE);
-        //         // // // Chunks.drawChunk(curpos, solidTilemap); //set's tile color // NOTE Moved to swap thing
+        //         // // // Chunks.drawChunk(curpos, colorTileMap); //set's tile color // NOTE Moved to swap thing
         //         UpdateChunk(curpos); //will be chunks later. 
         //     }
         // }
@@ -134,6 +140,7 @@ public class World : MonoBehaviour
                 drawChunkBox(key, new Color(1, 0, 0, 1));
                 // World.chunkstate_dict[key] = 
                 result = UpdateChunk(key); //will be chunks later. 
+                // 0 means no changes, 1 means changes
                 if (result == 0) { 
                     if (World.chunkstate_dict[key] == 1) {
                         result = 2; 
@@ -146,12 +153,12 @@ public class World : MonoBehaviour
         }
         ExecuteSwaps();
 
-        // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), solidTilemap);
+        // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), colorTileMap);
     }
 
     int UpdateChunk(Vector2Int cpos) {
         Vector3Int curcandidate;
-        int curreturn = 0; 
+        int curreturn = 0; //no changes
         if (!World.world_dict.ContainsKey(cpos)) {
             return -1;
         }
@@ -170,7 +177,7 @@ public class World : MonoBehaviour
                     World.execution_dict.Add((Vector2Int) curcandidate, World.world_dict[cpos][ii].position);
                 }
                     // Debug.LogError("Hmm" + World.world_dict[cpos][ii].position + " : " + curcandidate);
-                curreturn = 1; 
+                curreturn = 1; //changes
             }
         }
         return curreturn; 
@@ -178,7 +185,7 @@ public class World : MonoBehaviour
     void ExecuteSwaps() {
         List<Vector2Int> keyList = new List<Vector2Int>(World.execution_dict.Keys);
         foreach (Vector2Int fish in keyList) { //fish is destination, value is origin.
-            Chunks.Swap(fish, World.execution_dict[fish], solidTilemap);
+            Chunks.Swap(fish, World.execution_dict[fish], colorTileMap);
             // World.chunkstate_dict[key] = 1;
             
             // Chunks.Edge curedge = 
@@ -265,9 +272,9 @@ public class World : MonoBehaviour
     }
 
     public void AddCell(Vector2Int pos) {
-        Debug.Log(pos);
+        // Debug.Log(pos);
         World.chunkstate_dict[Chunks.GetChunkPos(pos)] = 1;
-        Chunks.AddCell(new Sand(pos), solidTilemap); 
+        Chunks.AddCell(new Sand(pos), colorTileMap); 
     }
 
 
@@ -283,5 +290,6 @@ public class World : MonoBehaviour
         //     return (pos.y <= y);
         // }
     }
+
 
 }

@@ -17,6 +17,21 @@ public static class Chunks
         tilemap.SetTiles(positions, tileArray);
     }
 
+    public static void fillSolidChunk(Vector2Int chunkpos, Tilemap tilemap, Tile tile) {
+        Vector3Int[] positions = new Vector3Int[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
+        TileBase[] tileArray = new TileBase[Constants.CHUNK_SIZE* Constants.CHUNK_SIZE];
+        for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
+            if(World.world_dict[GetChunkPos(chunkpos)][ii].matter == Matter.Solid) {
+                tileArray[ii] = tile; 
+            } else {
+                tileArray[ii] = null; 
+            }
+            positions[ii] =(Vector3Int)chunkpos + new Vector3Int((int) ii%Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE, 0);
+        }
+        tilemap.SetTiles(positions, tileArray);
+    }
+
+
     public static void drawChunk(Vector2Int chunkpos, Tilemap tilemap) {
         element[] curchunk = World.world_dict[chunkpos];
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
@@ -44,23 +59,33 @@ public static class Chunks
         element e1, e2;
         e1 = GetCell(pos1);
         e2 = GetCell(pos2);
+        // if (e1.matter == e2.matter) {
+            
+        // } else if (e1.matter == Matter.Solid) {
+        //     TileManager.AddTile(pos2);
+        //     TileManager.RemoveTile(pos1);
+        // } else if (e2.matter == Matter.Solid) {
+        //     TileManager.AddTile(pos1);
+        //     TileManager.RemoveTile(pos2);
+        // }
+
+
         e1.position = pos2;
         e2.position = pos1; 
         SetCell(e1); 
         SetCell(e2);
         SetTileColour(e1.color, (Vector3Int)e1.position, tilemap);
         SetTileColour(e2.color, (Vector3Int)e2.position, tilemap);
+        
     }
 
     public static void AddCell(element cell, Tilemap tilemap) 
     {
         if (GetCell(cell.position).matter == Matter.None) {
             SetCell(cell); 
+             SetTileColour(cell.color, (Vector3Int)cell.position, tilemap);
         }
     }
-
-
-
 
     public static int mod(int x, int m) {
         // return (x%m + m)%m;
@@ -102,6 +127,7 @@ public static class Chunks
             Debug.LogError("ehhhh")  ;
         }
     }
+
     public static void TryWakeCell(Vector2Int pos) {
         if (World.world_dict.ContainsKey(GetChunkPos(pos))) {
             World.world_dict[GetChunkPos(pos)][GetIndex(pos)].TryWakeCell();
