@@ -18,7 +18,7 @@ public class element
     
     public Color32 color{get; set;}
     public Matter matter{get; set;}
-    public int IsFreeFalling{get; set;}
+    public int IsFreeFalling{get; set;} //0 sleeping, 1 and 2 are awake
     public float inertialResistance; 
 
     public float friction;

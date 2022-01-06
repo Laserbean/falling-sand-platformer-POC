@@ -29,9 +29,10 @@ public class World : MonoBehaviour
     
     // public const int minx = 0, maxx  =1;
     // public const int miny = 0, maxy  =1;
+
     // public const int minx = -1, maxx  =1;
     // public const int miny = -1, maxy  =1;
-    
+    public PolygonCollider2D thispolygon; 
     void Start()
     {
         TileManager.init(basictile, solidTileMap);
@@ -39,6 +40,8 @@ public class World : MonoBehaviour
         World.world_dict = new Dictionary<Vector2Int, element[]>(); 
         World.chunkstate_dict = new Dictionary<Vector2Int, int>(); 
         World.execution_dict = new Dictionary<Vector2Int, Vector2Int>(); 
+
+        thispolygon = this.gameObject.GetComponent<PolygonCollider2D>();
 
         // chunkgen(new Vector2Int(0, 0));
         Vector2Int curpos;
@@ -135,10 +138,14 @@ public class World : MonoBehaviour
         // }
         int result = 0;
         List<Vector2Int> keyList = new List<Vector2Int>(World.chunkstate_dict.Keys);
+        int i = 0;
         foreach (Vector2Int key in keyList) {
             if (World.chunkstate_dict[key] == 1 || World.chunkstate_dict[key] == 2) {
-                drawChunkBox(key, new Color(1, 0, 0, 1));
+                drawChunkBox(key, new Color(1, 0, 0, 0.3f));
+
                 // World.chunkstate_dict[key] = 
+                thispolygon.SetPath(i++, Chunks.GetChunkMesh(Chunks.GetChunkPos(key)));
+
                 result = UpdateChunk(key); //will be chunks later. 
                 // 0 means no changes, 1 means changes
                 if (result == 0) { 
@@ -151,6 +158,9 @@ public class World : MonoBehaviour
                 }
             }
         }
+        // while (i < 98) {
+        //     thispolygon.SetPath(i, new Vector2[0]);
+        // }
         ExecuteSwaps();
 
         // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), colorTileMap);
