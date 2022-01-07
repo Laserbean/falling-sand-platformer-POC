@@ -53,56 +53,92 @@ public static class Chunks
         tilemap.SetColor(position, colour);
     }
 
-    public static Vector2[]  GetChunkMesh(Vector2Int chunkpos) {
-        // Vector2[] fish = new Vector2[99];
-        // MeshFilter meshFilter;
-        // PolygonCollider2D polygonCollider;
+    public static List<Vector2> GetSquare(Vector2Int pos) {
         List<Vector2> fish = new List<Vector2>();
+        fish.Add((Vector2) pos);
+        fish.Add((Vector2) pos + Vector2.up);
+        fish.Add((Vector2) pos + Vector2.up + Vector2.right);
+        fish.Add((Vector2) pos + Vector2.right);
+        return fish;
+    }
 
+    public static List<List<Vector2>> GetChunkMesh(Vector2Int chunkpos) {
+        List<List<Vector2>> fish = new List<List<Vector2>>();
+        // List<Vector2> fish = new List<Vector2>();
 
-        int curind = 0;
         Vector2Int curpos = chunkpos;
-
         Matter curmatter = GetCell(curpos).matter;
-        while (curind < Constants.CHUNK_SIZE*Constants.CHUNK_SIZE) {
+        for (int curind =0; curind < Constants.CHUNK_SIZE*Constants.CHUNK_SIZE; curind++) {
             curpos = chunkpos + GetVectorIndex(curind);
             if (GetCell(curpos).matter != Matter.Solid && GetCell(curpos).IsFreeFalling > 0) {
             } else {
-                fish.Add((Vector2) curpos); 
+                fish.Add(GetSquare(curpos)); 
             }
-            curind++;
         }
-
-        Vector2[] myArrayOfPoints =  fish.ToArray();
-         // We need to convert those Vector2 into Vector3
-        Vector3[] vertices3D = System.Array.ConvertAll<Vector2, Vector3>(myArrayOfPoints, v => v);
- 
-         // Then, we need to calculate the indices of each vertex.
-         // For that, you can use the Triangulator class available in:
-         //https://gist.github.com/N-Carter/12242476dc4e4036db34
-        Triangulator triangulator = new Triangulator(myArrayOfPoints);
-        int[] indices = triangulator.Triangulate();
-
-
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices3D;
-        mesh.triangles = indices;
-        // mesh.colors = colors;
-
-        // Recalculate the shape of the mesh
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        // meshFilter = new MeshFilter(); 
-        // meshFilter.mesh = mesh;
-        // polygonCollider = new PolygonCollider2D();
- 
-        //  // For the collisions, basically you need to add the vertices to your PolygonCollider2D            
-        // polygonCollider.points = myArrayOfPoints;
-
-        return System.Array.ConvertAll<Vector3, Vector2>(mesh.vertices, v => v);; 
+        TilePolygon chicken = new TilePolygon(); 
+        return chicken.UniteCollisionPolygons(fish);
+        // return fish;
     }
-        // int totalcount = 0;
+
+    // public static Vector2[]  GetChunkMesh(Vector2Int chunkpos) {
+    //     // Vector2[] fish = new Vector2[99];
+    //     // MeshFilter meshFilter;
+    //     // PolygonCollider2D polygonCollider;
+    //     List<Vector2> fish = new List<Vector2>();
+
+
+    //     int curind = 0;
+    //     Vector2Int curpos = chunkpos;
+
+    //     Matter curmatter = GetCell(curpos).matter;
+    //     while (curind < Constants.CHUNK_SIZE*Constants.CHUNK_SIZE) {
+    //         curpos = chunkpos + GetVectorIndex(curind);
+    //         if (GetCell(curpos).matter != Matter.Solid && GetCell(curpos).IsFreeFalling > 0) {
+    //         } else {
+    //             fish.Add((Vector2) curpos); 
+    //         }
+    //         curind++;
+    //     }
+
+    //     Vector2[] myArrayOfPoints =  fish.ToArray();
+    //      // We need to convert those Vector2 into Vector3
+    //     Vector3[] vertices3D = System.Array.ConvertAll<Vector2, Vector3>(myArrayOfPoints, v => v);
+ 
+    //      // Then, we need to calculate the indices of each vertex.
+    //      // For that, you can use the Triangulator class available in:
+    //      //https://gist.github.com/N-Carter/12242476dc4e4036db34
+    //     Triangulator triangulator = new Triangulator(myArrayOfPoints);
+    //     int[] indices = triangulator.Triangulate();
+
+
+    //     Mesh mesh = new Mesh();
+    //     mesh.vertices = vertices3D;
+    //     mesh.triangles = indices;
+    //     // mesh.colors = colors;
+
+    //     // Recalculate the shape of the mesh
+    //     mesh.RecalculateNormals();
+    //     mesh.RecalculateBounds();
+
+    //     // meshFilter = new MeshFilter(); 
+    //     // meshFilter.mesh = mesh;
+    //     // polygonCollider = new PolygonCollider2D();
+ 
+    //     //  // For the collisions, basically you need to add the vertices to your PolygonCollider2D            
+    //     // polygonCollider.points = myArrayOfPoints;
+
+
+    //     //Adapted from 3rd party edge collider optimizer
+    //     int tolerance = 1;
+
+    //     myArrayOfPoints = System.Array.ConvertAll<Vector3, Vector2>(mesh.vertices, v => v);
+    //     List<Vector2> path = new List<Vector2>(myArrayOfPoints);
+    //     path = Collider2DOptimization.ShapeOptimizationHelper.DouglasPeuckerReduction(path, tolerance);
+        
+
+    //     return path.ToArray(); 
+    // }
+    //     // int totalcount = 0;
         // int curind = 0;
         // int curfish = 0;
         // Vector2Int curpos = chunkpos;

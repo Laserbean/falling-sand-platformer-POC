@@ -20,28 +20,37 @@ public class World : MonoBehaviour
     // public static Dictionary<Vector2Int, TileBase[]> world_dict;
     public static Dictionary<Vector2Int, element[]> world_dict;
     public static Dictionary<Vector2Int, int> chunkstate_dict;
+    public static List<List<Vector2>> list_o_collider_points;
 
     public static Dictionary<Vector2Int, Vector2Int> execution_dict;
+    public static Dictionary<Vector2Int, List<List<Vector2>>> chunkHitbox_dict;
+
 
 
     public const int minx = -5, maxx  =5;
-    public const int miny = -5, maxy  =20;
+    public const int miny = -5, maxy  =5;
     
     // public const int minx = 0, maxx  =1;
     // public const int miny = 0, maxy  =1;
 
-    // public const int minx = -1, maxx  =1;
-    // public const int miny = -1, maxy  =1;
+    // public const int minx = -1, maxx  =3;
+    // public const int miny = -1, maxy  =3;
     public PolygonCollider2D thispolygon; 
+    TilePolygon Tilepoly; 
     void Start()
     {
         TileManager.init(basictile, solidTileMap);
         // colorTileMap = GameObject.Find("solid").GetComponent<Tilemap>();
         World.world_dict = new Dictionary<Vector2Int, element[]>(); 
         World.chunkstate_dict = new Dictionary<Vector2Int, int>(); 
-        World.execution_dict = new Dictionary<Vector2Int, Vector2Int>(); 
+        World.execution_dict = new Dictionary<Vector2Int, Vector2Int>();
+        World.chunkHitbox_dict = new Dictionary<Vector2Int, List<List<Vector2>>>();
+
+
+        list_o_collider_points = new List<List<Vector2>>();
 
         thispolygon = this.gameObject.GetComponent<PolygonCollider2D>();
+        Tilepoly = new TilePolygon();
 
         // chunkgen(new Vector2Int(0, 0));
         Vector2Int curpos;
@@ -122,7 +131,8 @@ public class World : MonoBehaviour
         //     }
  
         World.world_dict.Add(chunkpos, fish);
-        // // // // // // Debug.LogError(chunkpos);
+        // // // // // // // // // // // // // // // World.chunkHitbox_dict.Add(chunkpos, Chunks.GetChunkMesh(chunkpos));
+        // // // Debug.LogError(chunkpos);
 
     }
 
@@ -138,13 +148,11 @@ public class World : MonoBehaviour
         // }
         int result = 0;
         List<Vector2Int> keyList = new List<Vector2Int>(World.chunkstate_dict.Keys);
-        int i = 0;
         foreach (Vector2Int key in keyList) {
             if (World.chunkstate_dict[key] == 1 || World.chunkstate_dict[key] == 2) {
                 drawChunkBox(key, new Color(1, 0, 0, 0.3f));
 
                 // World.chunkstate_dict[key] = 
-                thispolygon.SetPath(i++, Chunks.GetChunkMesh(Chunks.GetChunkPos(key)));
 
                 result = UpdateChunk(key); //will be chunks later. 
                 // 0 means no changes, 1 means changes
@@ -156,12 +164,35 @@ public class World : MonoBehaviour
                 if (result != -1) {
                     World.chunkstate_dict[key] = result;
                 }
+                // list_o_collider_points.AddRange(Chunks.GetChunkMesh(Chunks.GetChunkPos(key))); 
+
+                if (World.chunkHitbox_dict.ContainsKey(key)) {
+                    World.chunkHitbox_dict[key] = Chunks.GetChunkMesh(key);
+                } else {
+                    World.chunkHitbox_dict.Add(key, Chunks.GetChunkMesh(key));
+                }
+
             }
         }
         // while (i < 98) {
         //     thispolygon.SetPath(i, new Vector2[0]);
         // }
         ExecuteSwaps();
+        // int ii = 0;
+        list_o_collider_points.Clear();
+
+        Vector2Int curpos;
+        for (int i = minx; i < maxx; i++) {
+            for (int j = miny; j < maxy; j++) {
+                curpos = Chunks.GetChunkPos(new Vector2Int(i * Constants.CHUNK_SIZE, j* Constants.CHUNK_SIZE));
+                if (World.chunkHitbox_dict.ContainsKey(curpos)) {
+                    list_o_collider_points.AddRange(World.chunkHitbox_dict[curpos]);
+                }
+            }
+        }
+
+        Tilepoly.CreateLevelCollider(list_o_collider_points, thispolygon);
+        
 
         // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), colorTileMap);
     }

@@ -30,10 +30,10 @@ public class Powder: element
         Vector2Int end = this.position + curspeed; 
         
         Vector2Int candidate;
-        this.color = new Color32(200, 200, 50, 255);
+        // this.color = new Color32(200, 200, 50, 255);
 
         if (Chunks.GetCell((this.position + new Vector2Int(0, -1))).matter == Matter.None) {  //can go down
-            this.color = new Color32(255, 50, 50, 255);//red
+            // this.color = new Color32(255, 50, 50, 255);//red
             candidate = (this.position + new Vector2Int(0, -1));
             this.speed = new Vector2(this.speed.x, this.speed.y - Constants.GRAVITY);
             for (int i = -2; i >= curspeed.y; i--) {
@@ -58,14 +58,14 @@ public class Powder: element
             }
             return (Vector3Int) candidate;
         } else {
-                this.color = new Color32(40, 205, 255, 255); //turquoise maybe
+                // this.color = new Color32(40, 205, 255, 255); //turquoise maybe
             candidate = (this.position);
             if (Mathf.Abs(curspeed.x) > 0) {
                 this.speed =new Vector2 ( Chunks.GetCell(this.position-new Vector2Int(0, 1)).friction * this.friction * this.speed.x, 0f);
                 if (Mathf.Abs(this.speed.x) < 0.01) {
                     this.IsFreeFalling -=1;
                 }
-                this.color = new Color32(40, 255, 50, 255); //green
+                // this.color = new Color32(40, 255, 50, 255); //green
                 for (int i = 1; i < Mathf.Abs(curspeed.x); i++) {
                     if (Chunks.GetCell(this.position + new Vector2Int((int)Mathf.Sign(curspeed.x)*i,0)).matter == Matter.None) {
                     } else { 
@@ -78,7 +78,7 @@ public class Powder: element
                     candidate = (this.position + new Vector2Int((int)Mathf.Sign(curspeed.x)*i,0));
 
                 }
-                this.color = new Color32(40, 30, 50, 255); 
+                // this.color = new Color32(40, 30, 50, 255); 
                 
                 if (candidate== this.position) {
                      //pass
