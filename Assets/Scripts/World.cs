@@ -5,6 +5,9 @@ using UnityEngine.Tilemaps;
 
 // using System.Linq; //for the foreach loop thing
 
+
+
+
 public class World : MonoBehaviour
 {
     // Global constants
@@ -146,6 +149,7 @@ public class World : MonoBehaviour
         //         UpdateChunk(curpos); //will be chunks later. 
         //     }
         // }
+        float starttime = Time.realtimeSinceStartup;
         int result = 0;
         List<Vector2Int> keyList = new List<Vector2Int>(World.chunkstate_dict.Keys);
         foreach (Vector2Int key in keyList) {
@@ -177,7 +181,10 @@ public class World : MonoBehaviour
         // while (i < 98) {
         //     thispolygon.SetPath(i, new Vector2[0]);
         // }
+        Debug.Log("First"+(Time.realtimeSinceStartup - starttime)); 
         ExecuteSwaps();
+        Debug.Log("Execute swaps"+(Time.realtimeSinceStartup - starttime)); 
+
         // int ii = 0;
         list_o_collider_points.Clear();
 
@@ -190,8 +197,12 @@ public class World : MonoBehaviour
                 }
             }
         }
+        Debug.Log("Prepare collider"+(Time.realtimeSinceStartup - starttime)); 
+
 
         Tilepoly.CreateLevelCollider(list_o_collider_points, thispolygon);
+        Debug.Log("CreateCollider"+(Time.realtimeSinceStartup - starttime)); 
+
         
 
         // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), colorTileMap);
