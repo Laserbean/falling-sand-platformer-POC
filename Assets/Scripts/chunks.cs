@@ -70,7 +70,7 @@ public static class Chunks
         Matter curmatter = GetCell(curpos).matter;
         for (int curind =0; curind < Constants.CHUNK_SIZE*Constants.CHUNK_SIZE; curind++) {
             curpos = chunkpos + GetVectorIndex(curind);
-            if (GetCell(curpos).matter != Matter.Solid && GetCell(curpos).IsFreeFalling > 0) {
+            if (GetCell(curpos).matter != Matter.Solid || GetCell(curpos).IsFreeFalling != 0) {
             } else {
                 fish.Add(GetSquare(curpos)); 
             }
@@ -469,5 +469,14 @@ public static class Chunks
         //     }
         // }
         // return new List<Vector2Int>(returnarr);
+    }
+}
+
+public struct ChunkState {
+    public int state {get; set;}
+    public int index {get; set;}
+    public ChunkState(int _state, int _col_ind) {
+        state =_state;
+        index = _col_ind; 
     }
 }

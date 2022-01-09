@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class element 
+public struct element_s
 {
     /*
     This will be the base class. 
@@ -20,10 +20,9 @@ public class element
     public Matter matter{get; set;}
     public int IsFreeFalling{get; set;} //0 sleeping, 1 and 2 are awake
     public float inertialResistance; 
-
     public float friction;
 
-    public element(Vector2Int pos, Vector2? speed = null)
+    public element_s(Vector2Int pos, Vector2? speed = null)
     {
         this.IsFreeFalling = 2;
         this.position = pos; 
@@ -38,18 +37,18 @@ public class element
         this.inertialResistance = 0f; 
     }
 
-    public virtual Vector3Int Step()
+    public Vector3Int Step()
     {
         return Vector3Int.one;
         //Do nothing here. 
     }
-    public virtual Vector3Int StepSimple()
+    public Vector3Int StepSimple()
     {
         return Vector3Int.one;
         //Do nothing here. 
     }
 
-    public virtual void TryWakeCell() {
+    public void TryWakeCell() {
         if (this.IsFreeFalling >0) { return;}
 
         this.IsFreeFalling = Random.Range(0f, 1f) >= inertialResistance ? 2: 0;
@@ -57,26 +56,5 @@ public class element
     }
 
 
-
-}
-
-
-public enum Matter
-{
-    Solid,
-    Liquid,
-    Gas, 
-    Other,
-    None,
-    Bedrock
-}
-
-public class Constants
-{
-    public const float GRAVITY = 0.5f;  //pixels per frame
-    public const int CHUNK_SIZE = 16;
-    public const float PIXEL_SCALE = 0.125f;
-    public const float PERIOD = 0.05f;
-    // public const float PERIOD = 0.5f;
 
 }
