@@ -25,7 +25,7 @@ public class World : MonoBehaviour
 
     // public static Dictionary<Vector2Int, bool[,]> doneChunks; 
     // public static Dictionary<Vector2Int, TileBase[]> world_dict;
-    public static Dictionary<Vector2Int, element[]> world_dict;
+    public static Dictionary<Vector2Int, element_s[]> world_dict;
     public static Dictionary<Vector2Int, ChunkState> chunkstate_dict;
     public static List<List<Vector2>> list_o_collider_points;
     public static List<int> collider_index_used; 
@@ -52,7 +52,7 @@ public class World : MonoBehaviour
     {
         // TileManager.init(basictile, solidTileMap);
         // colorTileMap = GameObject.Find("solid").GetComponent<Tilemap>();
-        World.world_dict = new Dictionary<Vector2Int, element[]>(); 
+        World.world_dict = new Dictionary<Vector2Int, element_s[]>(); 
         World.chunkstate_dict = new Dictionary<Vector2Int, ChunkState>(); 
         World.execution_dict = new Dictionary<Vector2Int, Vector2Int>();
         World.chunkHitbox_dict = new Dictionary<Vector2Int, List<List<Vector2>>>();
@@ -96,18 +96,18 @@ public class World : MonoBehaviour
         World.print("done");
         // float period = 1f/60f; //time update
 
-        InvokeRepeating("MyUpdate", Constants.PERIOD, Constants.PERIOD);
+        // InvokeRepeating("MyUpdate", Constants.PERIOD, Constants.PERIOD);
  
     }
 
-    // void Update() {
-    //     MyUpdate();
-    // }
+    void Update() {
+        MyUpdate();
+    }
 
     //worldget
     void chunkgen(Vector2Int chunkpos)
     {
-        element[] fish = new element[(int)Mathf.Pow(Constants.CHUNK_SIZE, 2)];
+        element_s[] fish = new element_s[(int)Mathf.Pow(Constants.CHUNK_SIZE, 2)];
 
         // List<Vector2Int> vlist = Chunks.GetLinearList(chunkpos+ new Vector2Int(8,8), chunkpos + new Vector2Int(14,15));
         float val = 0.5f; 
@@ -117,36 +117,11 @@ public class World : MonoBehaviour
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // // // cur index in chunk is [ii + ii * Constants.CHUNK_SIZE]
             if (UnityEngine.Random.Range(0f, 1f) > val ){//&& Chunks.mod(ii,Constants.CHUNK_SIZE) == 0) {
-                fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+                fish[ii] = e_gen.Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             } else {
-                fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
+                fish[ii] = new element_s(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
             }
-            // if (ii < Constants.CHUNK_SIZE) {
-            //     fish[ii] = new Bedrock(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            // } 
-            // if(ii == 0 ||ii == 2 || ii == 3 || ii == 0 || ii == 4 || ii == 6 || ii == 7) { //(int)Mathf.Pow(Constants.CHUNK_SIZE, 2) /2
-
-            // if(ii == 0) { //(int)Mathf.Pow(Constants.CHUNK_SIZE, 2) /2
-            //     fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE), new Vector2(3,3));
-            // }else {
-            //     fish[ii] = new element(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-            // }
-
-
-
-            // Vector2Int curpoint = chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE);
-
-            // if (vlist.Contains(curpoint)){
-            //     fish[ii] = new Sand(chunkpos + new Vector2Int((int)ii % Constants.CHUNK_SIZE, (int)ii/Constants.CHUNK_SIZE));
-
-            // }
-
         }
-
-
-        // if (Mathf.Round(Random.Range(0, 1)) > 0.5) {
-        //         fish[ii] = basictile
-        //     }
  
         World.world_dict.Add(chunkpos, fish);
         World.chunkHitbox_dict.Add(chunkpos, Chunks.GetChunkMesh(chunkpos));
@@ -154,19 +129,8 @@ public class World : MonoBehaviour
 
     }
     public GameEvent deleteevent; 
-
+    [SerializeField] private bool isdebug = false;
     void MyUpdate() {
-        // // // // Chunks.drawChunk(Vector2Int.zero, colorTileMap);
-        // Vector2Int curpos;
-        // for (int i = minx; i < maxx; i++) {
-        //     for (int j = miny; j < maxy; j++) {
-        //         curpos = new Vector2Int(i * Constants.CHUNK_SIZE, j* Constants.CHUNK_SIZE);
-        //         // // // Chunks.drawChunk(curpos, colorTileMap); //set's tile color // NOTE Moved to swap thing
-        //         UpdateChunk(curpos); //will be chunks later. 
-        //     }
-        // }
-        // NativeArray<float3> positionArray = new NativeArray<float3>(zombieList.Count, Allocator.TempJob);
-
         float starttime = Time.realtimeSinceStartup;
         float framestart = starttime; 
         // UpdateChunksWithJobs();
@@ -174,15 +138,18 @@ public class World : MonoBehaviour
         // while (i < 98) {
         //     thispolygon.SetPath(i, new Vector2[0]);
         // }
-        Debug.Log("First "+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
-        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+        if (isdebug) {
+            Debug.Log("First "+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+            Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+        }
 
         starttime = Time.realtimeSinceStartup;
 
         ExecuteSwaps();
-        Debug.Log("Execute swaps"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
-        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
-
+        if (isdebug) {
+            Debug.Log("Execute swaps"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+            Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+        }
         starttime = Time.realtimeSinceStartup;
 
         // int ii = 0;
@@ -212,9 +179,11 @@ public class World : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Prepare Collider"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
-        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+        if (isdebug) {
 
+            Debug.Log("Prepare Collider"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+            Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+        }
         starttime = Time.realtimeSinceStartup;
 
 
@@ -223,8 +192,9 @@ public class World : MonoBehaviour
 
         // Chunks.drawChunk(new Vector2Int(0, -Constants.CHUNK_SIZE), colorTileMap);
 
+        if (isdebug) {
         Debug.Log("\tTotal Frame"+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
-
+        }
     }
 
     void UpdateChunks() {
@@ -266,25 +236,29 @@ public class World : MonoBehaviour
             return -1;
         }
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
-            curcandidate = World.world_dict[cpos][ii].Step();
+            if (World.world_dict[cpos][ii].matter == Matter.Powder) {
+                curcandidate = e_step.PowderStep(World.world_dict[cpos][ii]);
+                if (curcandidate.z == 0) {
+                    if (World.execution_dict.ContainsKey((Vector2Int)curcandidate)){
+                        if (UnityEngine.Random.Range(0f, 1f) > 0.5f) {
+                            World.execution_dict[(Vector2Int) curcandidate] = World.world_dict[cpos][ii].position;
+                        }
+                        // Debug.Break();
+                    } else {
+                        World.execution_dict.Add((Vector2Int) curcandidate, World.world_dict[cpos][ii].position);
+                    }
+                    // Debug.LogError("Hmm" + World.world_dict[cpos][ii].position + " : " + curcandidate);
+                    curreturn = 1; //changes
+                }
+            } else {
 
+            }
             //  World.world_dict[cpos][ii].position   //original
             //  curcandidate  //destination
-            if (curcandidate.z == 0) {
-                if (World.execution_dict.ContainsKey((Vector2Int)curcandidate)){
-                    if (UnityEngine.Random.Range(0f, 1f) > 0.5f) {
-                        World.execution_dict[(Vector2Int) curcandidate] = World.world_dict[cpos][ii].position;
-                    }
-                    // Debug.Break();
-                } else {
-                    World.execution_dict.Add((Vector2Int) curcandidate, World.world_dict[cpos][ii].position);
-                }
-                    // Debug.LogError("Hmm" + World.world_dict[cpos][ii].position + " : " + curcandidate);
-                curreturn = 1; //changes
-            }
         }
         return curreturn; 
     }
+
     void ExecuteSwaps() {
         List<Vector2Int> keyList = new List<Vector2Int>(World.execution_dict.Keys);
         int curindex; 
@@ -366,8 +340,11 @@ public class World : MonoBehaviour
 
     public void MouseEvent(Vector3 pos1) {
         int radius = (int) pos1.z; 
+        // radius = 2; 
         Vector2Int pos = new Vector2Int((int)(pos1.x *8) ,(int) (pos1.y *8));
         Vector2Int curpos = Vector2Int.zero; 
+                    // AddCell(curpos);
+
         for (int j = (int) pos.y - radius; j < pos.y + radius; j++) {
             for (int i = (int) pos.x - radius; i < pos.x + radius; i++) {
                 curpos.x = i;
@@ -383,7 +360,7 @@ public class World : MonoBehaviour
     public void AddCell(Vector2Int pos) {
         // Debug.Log(pos);
         World.chunkstate_dict[Chunks.GetChunkPos(pos)] = new ChunkState(1, World.chunkstate_dict[Chunks.GetChunkPos(pos)].index);
-        Chunks.AddCell(new Sand(pos), colorTileMap); 
+        Chunks.AddCell(e_gen.Sand(pos), colorTileMap); 
     }
 
 

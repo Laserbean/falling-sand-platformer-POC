@@ -34,7 +34,7 @@ public static class Chunks
 
 
     public static void drawChunk(Vector2Int chunkpos, Tilemap tilemap) {
-        element[] curchunk = World.world_dict[chunkpos];
+        element_s[] curchunk = World.world_dict[chunkpos];
         for(int ii =0;ii < Mathf.Pow(Constants.CHUNK_SIZE, 2); ii++) {
             // if (curchunk[ii].matter == Matter.Solid) {
                 SetTileColour(curchunk[ii].color, (Vector3Int)curchunk[ii].position, tilemap);
@@ -65,14 +65,21 @@ public static class Chunks
     public static List<List<Vector2>> GetChunkMesh(Vector2Int chunkpos) {
         List<List<Vector2>> fish = new List<List<Vector2>>();
         // List<Vector2> fish = new List<Vector2>();
-
+        element_s curcell; 
         Vector2Int curpos = chunkpos;
-        Matter curmatter = GetCell(curpos).matter;
+
+        curcell = GetCell(curpos);
         for (int curind =0; curind < Constants.CHUNK_SIZE*Constants.CHUNK_SIZE; curind++) {
             curpos = chunkpos + GetVectorIndex(curind);
-            if (GetCell(curpos).matter != Matter.Solid || GetCell(curpos).IsFreeFalling != 0) {
-            } else {
+            curcell = GetCell(curpos);
+            if (curcell.element == "sand") {
+                // Debug.Log("FISH");
+            }
+            if ((curcell.matter == Matter.Powder || curcell.matter == Matter.Solid) && curcell.IsFreeFalling == 0) {
                 fish.Add(GetSquare(curpos)); 
+
+                // Debug.LogError( curcell.matter + "" + curcell.IsFreeFalling);
+            } else { 
             }
         }
         TilePolygon chicken = new TilePolygon(); 
@@ -273,7 +280,7 @@ public static class Chunks
     
     public static void Swap(Vector2Int pos1, Vector2Int pos2, Tilemap tilemap) 
     {
-        element e1, e2;
+        element_s e1, e2;
         e1 = GetCell(pos1);
         e2 = GetCell(pos2);
         // if (e1.matter == e2.matter) {
@@ -296,7 +303,7 @@ public static class Chunks
         
     }
 
-    public static void AddCell(element cell, Tilemap tilemap) 
+    public static void AddCell(element_s cell, Tilemap tilemap) 
     {
         if (GetCell(cell.position).matter == Matter.None) {
             SetCell(cell); 
@@ -319,7 +326,7 @@ public static class Chunks
 
     }
 
-    public static element GetCell(Vector2Int pos) 
+    public static element_s GetCell(Vector2Int pos) 
     {
         if (World.world_dict.ContainsKey(GetChunkPos(pos))) {
             try {
@@ -331,11 +338,11 @@ public static class Chunks
             }
         } else {
             // Debug.Log("ret   urn bedrock" + GetChunkPos(pos) + " " + pos + " " + GetIndex(pos));
-            return new Bedrock(pos);
+            return e_gen.Bedrock(pos);
         }
     }
 
-    public static void SetCell(element cell) 
+    public static void SetCell(element_s cell) 
     {
         Vector2Int pos = cell.position; 
         if (World.world_dict.ContainsKey(GetChunkPos(pos))) {
@@ -347,7 +354,9 @@ public static class Chunks
 
     public static void TryWakeCell(Vector2Int pos) {
         if (World.world_dict.ContainsKey(GetChunkPos(pos))) {
-            World.world_dict[GetChunkPos(pos)][GetIndex(pos)].TryWakeCell();
+            element_s curcell = GetCell(pos);
+            curcell.IsFreeFalling = e_step.TryWakeCell(World.world_dict[GetChunkPos(pos)][GetIndex(pos)] );
+            SetCell(curcell);
         } else {
             Debug.LogError("ehhhh Can't wake cell cause world dones't whatever")  ;
         }
