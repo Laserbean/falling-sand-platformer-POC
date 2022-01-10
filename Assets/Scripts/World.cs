@@ -175,10 +175,14 @@ public class World : MonoBehaviour
         //     thispolygon.SetPath(i, new Vector2[0]);
         // }
         Debug.Log("First "+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+
         starttime = Time.realtimeSinceStartup;
 
         ExecuteSwaps();
         Debug.Log("Execute swaps"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+
         starttime = Time.realtimeSinceStartup;
 
         // int ii = 0;
@@ -209,7 +213,10 @@ public class World : MonoBehaviour
             }
         }
         Debug.Log("Prepare Collider"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
+        Debug.Log("\tTotal "+((Time.realtimeSinceStartup - framestart)*1000f) + "ms"); 
+
         starttime = Time.realtimeSinceStartup;
+
 
         // Tilepoly.CreateLevelCollider(Tilepoly.UniteCollisionPolygons(list_o_collider_points), thispolygon);
         // Debug.Log("CreateCollider"+((Time.realtimeSinceStartup - starttime)*1000f) + "ms"); 
