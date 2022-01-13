@@ -151,6 +151,8 @@ public struct ReallyToughParallelJob : IJobParallelFor {
     [ReadOnly] public float deltaTime;
 
     public void Execute(int index) {
+        testc a = new testc();
+        a.fish();
         positionArray[index] += new float3(0, moveYArray[index] * deltaTime, 0f);
         if (positionArray[index].y > 5f) {
             moveYArray[index] = -math.abs(moveYArray[index]);
@@ -164,6 +166,14 @@ public struct ReallyToughParallelJob : IJobParallelFor {
         }
     }
 
+}
+
+public class testc {
+    private Unity.Mathematics.Random _random;
+    public void fish() {
+        _random = new Unity.Mathematics.Random(1);
+        float fish = _random.NextFloat(-1f, 1f);
+    }
 }
 
 [BurstCompile]
