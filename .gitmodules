@@ -1,0 +1,3 @@
+[submodule "Assets/submodules/FallingBeans"]
+	path = Assets/submodules/FallingBeans
+	url = git@github.com:Laserbean/FallingBeans.gitgBeans.git
