@@ -1,3 +1,10 @@
 [submodule "Assets/submodules/FallingBeans"]
 	path = Assets/submodules/FallingBeans
 	url = git@github.com:Laserbean/FallingBeans.gitgBeans.git
+
+[submodule "/Assets/myunityevents"]
+	path = /Assets/myunityevents
+	url = git@github.com:Laserbean/UnityEvents.git
+[submodule "UnityEvents"]
+	path = Assets/Scripts/UnityEvents
+	url = git@github.com:Laserbean/UnityEvents.git

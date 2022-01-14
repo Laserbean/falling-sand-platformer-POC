@@ -281,8 +281,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorTileMap: {fileID: 346406136}
   basictile: {fileID: 11400000, guid: 04566aea94d352d49a2032a2e9eaf3bb, type: 2}
-  deleteevent: {fileID: 11400000, guid: 5d5fd490f838b6745acd49e2bc046427, type: 2}
-  isdebug: 1
+  deleteevent: {fileID: 11400000, guid: 1ba25fb589aee6a42b0bea793999a2b5, type: 2}
+  isdebug: 0
   UseJobs: 0
 --- !u!114 &346406138
 MonoBehaviour:
@@ -293,10 +293,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 346406133}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ce7c58e0d2a1864399f06e616de6a4a, type: 3}
+  m_Script: {fileID: 11500000, guid: afd4b5797d40e374cab0296401aea262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: 5a978a54eb5b16c4e95eca3fab5ff8b6, type: 2}
+  Event: {fileID: 11400000, guid: 0415a5616489aaf40833a611e6b8ca9d, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls: []
@@ -338,6 +338,10 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 2082945981, guid: 67c5437082d35e14ab63d8d2aa025ca8, type: 3}
+      propertyPath: spwn
+      value: 
+      objectReference: {fileID: 11400000, guid: 0415a5616489aaf40833a611e6b8ca9d, type: 2}
     - target: {fileID: 3605346174818477637, guid: 67c5437082d35e14ab63d8d2aa025ca8, type: 3}
       propertyPath: m_Name
       value: Player
@@ -608,4 +612,4 @@ MonoBehaviour:
   cam: {fileID: 519420031}
   thistile: {fileID: 0}
   tilemap: {fileID: 0}
-  spwn: {fileID: 11400000, guid: 5a978a54eb5b16c4e95eca3fab5ff8b6, type: 2}
+  spwn: {fileID: 0}
